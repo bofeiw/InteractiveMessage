@@ -1,0 +1,15 @@
+{
+  "messages": [
+    {
+      "content": "Hello World!",
+      "after": {
+        "type": "button",
+        "content": "Hello too!",
+        "click": {
+          "type": "message",
+          "content": "This website is under development!"
+        }
+      }
+    }
+  ]
+}
