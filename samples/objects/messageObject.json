@@ -1,7 +1,8 @@
 {
   "content": "Hello there!",
-  "beforeWaitTime": "num|rand|auto",
-  "afterWaitTime": "num|rand|auto",
-  "priority": "num|order|beforeAll|afterAll",
-  "after": "a list of after objects"
+  "beforeWaitTime": "0|num|rand|auto",
+  "afterWaitTime": "0|num|rand|auto",
+  "priority": "order|num|beforeAll|afterAll",
+  "after": "a list of after objects",
+  "showSpeed": "len|num"
 }
