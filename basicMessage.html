@@ -37,14 +37,7 @@
     showMessages = function (jsonData) {
         for (const message of jsonData.messages) {
             console.log(message);
-
-            const box = $("<div>").addClass("message-box");
-            const text = $("<div>").addClass("message-text");
-            const container = $("#message-container");
-            box.append(text);
-            text.append(message.content);
-            container.append(box);
-            container.append($("<br>"));
+            $("#message-container").append(new Message(message.content).toHTML());
         }
     };
 
