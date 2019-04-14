@@ -1,0 +1,22 @@
+#message-container {
+  border-left: 6px solid red;
+  background-color: lightgrey;
+  padding: 1em
+}
+
+.message-box {
+  overflow: hidden;
+  display: inline-block;
+  margin: 0 0 .125rem 0;
+  padding: .5rem .85rem;
+  border-radius: 1.25rem;
+  transform-origin: 0 100%;
+  vertical-align: middle;
+  transition: border-radius .25s ease-out .075s;
+  background: white;
+}
+
+.message-text {
+  font-family: "Helvetica", "Arial", sans-serif;
+  line-height: 1.5rem;
+}
