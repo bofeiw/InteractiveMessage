@@ -4,45 +4,35 @@ const Message = (function () {
     let messageID = 0;
 
     function nextID() {
-        return messageID++;
+        return "box-" + messageID++;
     }
 
     return function (content) {
         const ID = nextID();
         const messageContainer = $("#message-container");
-        const boxWrapper = $("<div>").addClass("box-wrapper");
         const box = $("<div>").addClass("message-box");
-        const text = $("<div>").addClass("message-text");
-
+        const text = $("<div>").addClass("message-text message-loading");
+        box.attr("id", ID);
         box.append(text);
-        boxWrapper.append(box);
-        text.append(content);
-
-        box.attr("id", boxID());
-        boxWrapper.attr("id", boxWrapperID());
-        text.attr("id", textID());
-
-        function boxID() {
-            return "box-" + ID;
+        
+        function showText() {
+            text.removeClass("message-loading", 500, () => {
+                text.append(content);
+            });
         }
 
-        function boxWrapperID() {
-            return "boxWrapper-" + ID;
-        }
+        function load() {
+            // const loading = $("<div>").addClass("loading");
+            // loading.append($("<div>").addClass("dot"));
+            // box.append(loading);
+            // box.append($("<div>").addClass("tail"));
+            // box.addClass("loading-box");
 
-        function textID() {
-            return "text-" + ID;
         }
 
         function appendToContainer() {
-            messageContainer.append(boxWrapper);
-        }
-
-        /* make message object appears */
-        function appear() {
-            // boxWrapper.style.height = boxWrapper.clientHeight + "px";
-
-            // boxWrapper.addClass("appeared")
+            messageContainer.append(box);
+            messageContainer.append($("<br>"));
         }
 
         return {
@@ -51,18 +41,21 @@ const Message = (function () {
             },
 
             appendToContainer: appendToContainer,
-            appear: appear
+            load: load,
+            showText: showText
         }
     }
 })();
 
+let messageOb;
 
 function showMessages(jsonData) {
     for (const message of jsonData.messages) {
         console.log(message);
         const messageObject = new Message(message.content);
         messageObject.appendToContainer();
-        messageObject.appear();
+        messageOb = messageObject;
+        messageObject.showText();
     }
 }
 
@@ -82,4 +75,6 @@ function start() {
 
 window.onload = function () {
     start();
+    // $('<button onclick="messageOb.load()">load</button>').appendTo('body');
+    // $('<button onclick="messageOb.showText()">show</button>').appendTo('body');
 };
