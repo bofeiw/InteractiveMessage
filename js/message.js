@@ -1,8 +1,6 @@
 "use strict";
 
 function Message(content) {
-    this.content = content;
-
     this.toHTML = function () {
         const boxWrapper = $("<div>").addClass("box-wrapper");
         const box = $("<div>").addClass("message-box");
@@ -11,14 +9,30 @@ function Message(content) {
         boxWrapper.append(box);
         text.append(content);
         return boxWrapper;
-    }
+    };
+
+
+    this.content = content;
+    const that = this;
+    this.HTML = this.toHTML();
+
+    return {
+        get content() {
+            return that.content;
+        },
+
+        get HTML() {
+            return that.HTML;
+        }
+
+    };
 }
 
 
 function showMessages(jsonData) {
     for (const message of jsonData.messages) {
         console.log(message);
-        $("#message-container").append(new Message(message.content).toHTML());
+        $("#message-container").append(new Message(message.content).HTML);
     }
 }
 
