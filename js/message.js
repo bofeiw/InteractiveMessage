@@ -1,6 +1,38 @@
 "use strict";
 
 const Message = function (content, id) {
+    /*
+    structure:
+    div container
+        div contents
+            div loading
+            div text
+        br
+     */
+
+    // create elements
+    const container = document.createElement("div");
+    const contents = document.createElement("div");
+    const loading = document.createElement("span");
+    const text = document.createElement("span");
+    const br = document.createElement("br");
+
+    // assemble elements
+    container.appendChild(contents);
+    container.appendChild(br);
+    contents.appendChild(loading);
+    contents.appendChild(text);
+
+    // add tags
+    contents.id = id;
+    text.innerHTML = content;
+    loading.innerHTML = '<b>•</b><b>•</b><b>•</b>';
+    container.classList.add("message-wrapper");
+    contents.classList.add("content-container");
+    loading.classList.add("content-loading");
+    text.classList.add("content-text");
+
+
     const optionIDs = [];
 
     function addOption(id) {
@@ -12,36 +44,22 @@ const Message = function (content, id) {
             return id;
         },
         get HTML() {
-            /*
-            structure:
-            div container
-                div contents
-                    div loading
-                    div text
-                br
-             */
-
-            // create elements
-            const container = document.createElement("div");
-            const contents = document.createElement("div");
-            const loading = document.createElement("div");
-            const text = document.createElement("div");
-            const br = document.createElement("br");
-
-            // assemble elements
-            container.appendChild(contents);
-            container.appendChild(br);
-            contents.appendChild(loading);
-            contents.appendChild(text);
-
-            // add tags
-            contents.id = id;
-            text.innerHTML = content;
-
             return container;
+        },
+        get loadingHTML() {
+            return loading;
+        },
+        get textHTML() {
+            return text;
         },
         get optionIDs() {
             return optionIDs;
+        },
+        get contentWrapper() {
+            return contents;
+        },
+        get content() {
+            return content;
         },
         addOption: addOption
     }
@@ -98,6 +116,7 @@ const MessageManager = function () {
     let optionContainer;
 
     let sendingActive = false;
+    const typingSpeed = 20;
 
     function init() {
         container = document.getElementById("interactive-message");
@@ -165,11 +184,82 @@ const MessageManager = function () {
         sendingActive = true;
         const message = getMessageByID(messageID);
         if (message) {
+            let typing = true;
+            const waitTime = message.content.replace(/<(?:.|\n)*?>/gm, '').length * typingSpeed + anime.random(900, 1200);
             removeElement(messageID, pendingMessageIDs);
             currentMessageID = messageID;
 
             // append to container
             messageContainer.appendChild(message.HTML);
+
+            const dimensions = getDimensions(message);
+            message.contentWrapper.style.width = dimensions.loading.w;
+            message.contentWrapper.style.height = dimensions.loading.h;
+            message.textHTML.style.visibility = "hidden";
+
+            // show up
+            anime({
+                targets: message.HTML,
+                opacity: [0, 1]
+            });
+
+            // loading dots
+            anime({
+                targets: message.HTML.querySelectorAll('b'),
+                opacity: [0.5, 1],
+                scale: [0.8, 1],
+                direction: 'alternate',
+                loop: true,
+                duration: 300,
+                delay: function (el, i) {
+                    return (i * 100) + 50
+                },
+                loopComplete: (anim) => {
+                    // remove loading dots
+                    if (!typing) {
+                        anim.pause();
+                        anime({
+                            targets: message.HTML.querySelectorAll('b'),
+                            opacity: 0,
+                            scale: 0,
+                            loop: false,
+                            duration: 300,
+                            easing: 'easeOutQuad',
+                            delay: anime.stagger(50),
+                        });
+                    }
+                }
+            });
+
+            // time's up, show content
+            setTimeout(() => {
+                typing = false;
+                // adjust bubble size
+                anime({
+                    targets: message.contentWrapper,
+                    width: [dimensions.loading.w, dimensions.message.w],
+                    height: [dimensions.loading.h, dimensions.message.h],
+                    easing: 'easeOutQuad',
+                    duration: 200,
+                    complete: () => {
+                        message.textHTML.style.opacity = 0;
+                        message.textHTML.style.visibility = "visible";
+                        // show text
+                        anime({
+                            targets: message.textHTML,
+                            opacity: 1,
+                            easing: 'easeInQuad',
+                            duration: 200,
+                            complete: () => {
+                                sendingActive = false;
+                                if (onFinish) {
+                                    onFinish();
+                                }
+                            }
+                        });
+                    }
+                })
+            }, waitTime);
 
             // append options if any
             if (message.optionIDs) {
@@ -183,10 +273,6 @@ const MessageManager = function () {
 
             sentMessageIDs.push(messageID);
             currentMessageID = undefined;
-        }
-        sendingActive = false;
-        if (onFinish) {
-            onFinish();
         }
     }
 
@@ -229,9 +315,29 @@ const MessageManager = function () {
         return getByID(id, options);
     }
 
+    function getFontSize() {
+        return parseInt(getComputedStyle(document.body).getPropertyValue('font-size'));
+    }
+
+    function pxToRem(px) {
+        return px / getFontSize() + 'rem';
+    }
+
+    function getDimensions(message) {
+        return {
+            message: {
+                w: pxToRem(message.textHTML.offsetWidth + 4),
+                h: pxToRem(message.textHTML.offsetHeight)
+            },
+            loading: {
+                w: pxToRem(message.loadingHTML.offsetWidth + 4),
+                h: pxToRem(message.loadingHTML.offsetHeight)
+            }
+        }
+    }
 
     function start() {
-        sendMessage(0, sendNextMassage);
+        sendNextMassage();
     }
 
     return {

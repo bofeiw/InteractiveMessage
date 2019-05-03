@@ -1,3 +1,27 @@
+:root {
+  font-size: 1.125rem;
+}
+
+@media (min-width: 600px) {
+  :root {
+    font-size: 1.5rem;
+  }
+}
+@media (min-width: 900px) {
+  :root {
+    font-size: 1.75rem;
+  }
+}
+@media (min-width: 1200px) {
+  :root {
+    font-size: 2rem;
+  }
+}
+*, *:before, *:after {
+  margin: 0;
+  padding: 0;
+}
+
 html {
   min-height: 100%;
 }
@@ -9,21 +33,53 @@ body {
 #interactive-message {
   min-height: 50%;
   max-height: 50%;
-  width: 100%;
+  width: 30%;
   overflow-y: scroll;
   overflow-x: hidden;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 #message-container {
   border-left: 6px solid red;
   background-color: lightgrey;
-  padding: 1em;
+  padding: 1rem;
 }
 
 #option-container {
   border-left: 6px solid green;
   background-color: lightgrey;
-  padding: 1em;
+  padding: 1rem;
+}
+
+.content-container {
+  padding: 0.5rem 0.85rem;
+  line-height: 1rem;
+  background: white;
+  border-radius: 1rem;
+  display: inline-block;
+  overflow: hidden;
+}
+
+.message-wrapper {
+  margin-bottom: 0.25rem;
+}
+
+.content-loading {
+  font-size: 2rem;
+  line-height: 1rem;
+}
+
+.content-container span {
+  display: block;
+}
+
+.content-container span b {
+  display: inline-block;
+  color: rgba(0, 0, 0, 0.5);
+}
+
+.content-loading {
+  position: absolute;
 }
 
 /*# sourceMappingURL=message.css.map */
