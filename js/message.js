@@ -4,7 +4,7 @@ const Message = (function () {
     let messageID = 0;
 
     function nextID() {
-        return "box-" + messageID++;
+        return  messageID++;
     }
 
     return function (content) {
