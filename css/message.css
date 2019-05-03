@@ -4,4 +4,10 @@
   padding: 1em;
 }
 
+#option-container {
+  border-left: 6px solid green;
+  background-color: lightgrey;
+  padding: 1em;
+}
+
 /*# sourceMappingURL=message.css.map */

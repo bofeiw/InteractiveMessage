@@ -47,13 +47,13 @@ const Message = function (content, id) {
     }
 };
 
-const Option = function (content, id, reply, onclick) {
+const Option = function (content, id, replyMessageID, onclick) {
     return {
         get id() {
             return id;
         },
-        get reply() {
-            return reply;
+        get replyMessageID() {
+            return replyMessageID;
         },
         get HTML() {
             /*
@@ -63,7 +63,7 @@ const Option = function (content, id, reply, onclick) {
              */
 
             // create elements
-            const container = document.createElement("div");
+            const container = document.createElement("button");
             const text = document.createElement("div");
 
             // assemble elements
@@ -72,7 +72,7 @@ const Option = function (content, id, reply, onclick) {
             // add tags
             container.id = id;
             text.innerHTML = content;
-            container.onclick = onclick(id);
+            container.addEventListener("click", () => onclick(id));
 
             return container;
         }
@@ -95,6 +95,8 @@ const MessageManager = function () {
     let optionIDused = 0;
     const container = document.getElementById("message-container");
 
+    let sendingActive = false;
+
     function init() {
         // TODO init DOM
     }
@@ -102,34 +104,74 @@ const MessageManager = function () {
     // parse JSON into properties
     function parseJSON(JSON) {
         for (let messageJSON of JSON.messages) {
-            // create message object
-            const message = new Message(messageJSON.content, messageIDused++);
-            messages.push(message);
+            const message = parseMessage(messageJSON);
             pendingMessageIDs.push(message.id);
-
-            // add options if any
-            // TODO support this
         }
     }
 
+    function parseMessage(messageJSON) {
+        // create message object
+        const message = new Message(messageJSON.content, `message-${messageIDused++}`);
+
+        // add options if any
+        const optionJSON = messageJSON.option;
+        if (optionJSON) {
+            const option = parseOption(optionJSON);
+            message.addOption(option.id);
+        }
+
+        messages.push(message);
+        return message;
+    }
+
+    function parseOption(optionJSON) {
+        const replyMessage = parseMessage(optionJSON.reply);
+        const option = new Option(optionJSON.content, `option-${optionIDused++}`, replyMessage.id, onOptionClick);
+        options.push(option);
+        pendingOptionIDs.push(option.id);
+        return option;
+    }
+
     function onOptionClick(optionID) {
-        // TODO support this
+        const option = getOptionByID(optionID);
+        if (option) {
+            removeElement(optionID, pendingOptionIDs);
+            document.getElementById(optionID).remove();
+            nextMessageID = getOptionByID(optionID).replyMessageID;
+            if (!sendingActive) {
+                sendMessage(nextMessageID);
+            }
+        }
     }
 
     // animate message to page
     function sendMessage(messageID, onFinish) {
+        sendingActive = true;
         const message = getMessageByID(messageID);
         if (message) {
             removeElement(messageID, pendingMessageIDs);
-            console.log(pendingMessageIDs);
             currentMessageID = messageID;
 
+            // append to container
             container.appendChild(message.HTML);
+
+            // append options if any
+            if (message.optionIDs) {
+                for (let optionID of message.optionIDs) {
+                    const option = getOptionByID(optionID);
+                    removeElement(optionID, pendingOptionIDs);
+                    displayingOptionIDs.push(optionID);
+                    document.getElementById("option-container").appendChild(option.HTML);
+                }
+            }
 
             sentMessageIDs.push(messageID);
             currentMessageID = undefined;
         }
-        onFinish();
+        sendingActive = false;
+        if (onFinish) {
+            onFinish();
+        }
     }
 
     // send next message to page
@@ -139,7 +181,7 @@ const MessageManager = function () {
             const tempNextMessageID = nextMessageID;
             nextMessageID = undefined;
             sendMessage(tempNextMessageID, sendNextMassage);
-        } else if (pendingMessageIDs) {
+        } else if (pendingMessageIDs.length > 0) {
             // no specification, send by increasing id
             sendMessage(pendingMessageIDs[0], sendNextMassage);
         }
@@ -188,7 +230,7 @@ function start() {
     manager.init();
 
     $.ajax({
-        url: "samples/basicMessage.json",
+        url: "samples/basicReply.json",
         dataType: 'json',
         success: function (data) {
             console.log(data);

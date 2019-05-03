@@ -1,0 +1,31 @@
+{
+  "messages": [
+    {
+      "content": "Hello there!",
+      "option": {
+        "content": "Hi bro!",
+        "reply": {
+          "content": "I'm replying to you!",
+          "option": {
+            "content": "I can see u r replying!",
+            "reply": {
+              "content": "HAHAHAHAHA!"
+            }
+          }
+        }
+      }
+    },
+    {
+      "content": "Welcome to this demo!"
+    },
+    {
+      "content": "Here are some basic messages"
+    },
+    {
+      "content": "They are message only"
+    },
+    {
+      "content": "😄"
+    }
+  ]
+}
