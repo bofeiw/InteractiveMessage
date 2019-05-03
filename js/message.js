@@ -93,12 +93,28 @@ const MessageManager = function () {
 
     let messageIDused = 0;
     let optionIDused = 0;
-    const container = document.getElementById("message-container");
+    let container;
+    let messageContainer;
+    let optionContainer;
 
     let sendingActive = false;
 
     function init() {
-        // TODO init DOM
+        container = document.getElementById("interactive-message");
+        if (!container) {
+            // if no container, create one
+            container = document.createElement("div");
+            container.id = "interactive-message";
+            document.body.appendChild(container);
+        }
+        messageContainer = document.createElement("div");
+        optionContainer = document.createElement("div");
+
+        messageContainer.id = "message-container";
+        optionContainer.id = "option-container";
+
+        container.appendChild(messageContainer);
+        container.appendChild(optionContainer);
     }
 
     // parse JSON into properties
@@ -153,7 +169,7 @@ const MessageManager = function () {
             currentMessageID = messageID;
 
             // append to container
-            container.appendChild(message.HTML);
+            messageContainer.appendChild(message.HTML);
 
             // append options if any
             if (message.optionIDs) {
@@ -161,7 +177,7 @@ const MessageManager = function () {
                     const option = getOptionByID(optionID);
                     removeElement(optionID, pendingOptionIDs);
                     displayingOptionIDs.push(optionID);
-                    document.getElementById("option-container").appendChild(option.HTML);
+                    optionContainer.appendChild(option.HTML);
                 }
             }
 
@@ -225,26 +241,38 @@ const MessageManager = function () {
     }
 };
 
+// ref https://stackoverflow.com/a/18278346/9494810
+function loadJSON(path, success, error) {
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === XMLHttpRequest.DONE) {
+            if (xhr.status === 200) {
+                if (success)
+                    success(JSON.parse(xhr.responseText));
+            } else {
+                if (error)
+                    error(xhr);
+            }
+        }
+    };
+    xhr.open("GET", path, true);
+    xhr.send();
+}
+
 function start() {
     const manager = new MessageManager();
     manager.init();
 
-    $.ajax({
-        url: "samples/basicReply.json",
-        dataType: 'json',
-        success: function (data) {
+    loadJSON("samples/basicReply.json",
+        data => {
             console.log(data);
             manager.parseJSON(data);
             manager.start();
         },
-        error: function () {
-            alert("error loading JSON");
-        }
-    });
+        () => alert("error loading JSON")
+    )
 }
 
 window.onload = function () {
     start();
-    // $('<button onclick="messageOb.load()">load</button>').appendTo('body');
-    // $('<button onclick="messageOb.showText()">show</button>').appendTo('body');
 };
