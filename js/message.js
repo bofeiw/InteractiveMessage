@@ -195,7 +195,8 @@ const MessageManager = function () {
             const dimensions = getDimensions(message);
             message.contentWrapper.style.width = dimensions.loading.w;
             message.contentWrapper.style.height = dimensions.loading.h;
-            message.textHTML.style.visibility = "hidden";
+            const diaplayBefore = message.textHTML.style.display;
+            message.textHTML.style.display = "none";
 
             // show up
             anime({
@@ -243,7 +244,7 @@ const MessageManager = function () {
                     duration: 200,
                     complete: () => {
                         message.textHTML.style.opacity = 0;
-                        message.textHTML.style.visibility = "visible";
+                        message.textHTML.style.display = diaplayBefore;
                         // show text
                         anime({
                             targets: message.textHTML,
