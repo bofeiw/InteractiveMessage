@@ -82,4 +82,12 @@ body {
   position: absolute;
 }
 
+.content-mine {
+  float: right;
+}
+
+.clear {
+  clear: both;
+}
+
 /*# sourceMappingURL=message.css.map */

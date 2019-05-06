@@ -1,6 +1,6 @@
 "use strict";
 
-const Message = function (content, id) {
+const Message = function (content, id = undefined, isSending = false) {
     /*
     structure:
     div container
@@ -23,8 +23,10 @@ const Message = function (content, id) {
     contents.appendChild(loading);
     contents.appendChild(text);
 
-    // add tags
-    contents.id = id;
+    // add tags if given
+    if (id) {
+        contents.id = id;
+    }
     text.innerHTML = content;
     loading.innerHTML = '<b>•</b><b>•</b><b>•</b>';
     container.classList.add("message-wrapper");
@@ -32,6 +34,15 @@ const Message = function (content, id) {
     loading.classList.add("content-loading");
     text.classList.add("content-text");
 
+    // message is sent by me
+    if (isSending) {
+        // right float element
+        contents.classList.add("content-mine");
+        loading.remove();
+        const clear = document.createElement('div');
+        clear.classList.add('clear');
+        container.appendChild(clear);
+    }
 
     const optionIDs = [];
 
@@ -67,6 +78,9 @@ const Message = function (content, id) {
 
 const Option = function (content, id, replyMessageID, onclick) {
     return {
+        get content() {
+            return content;
+        },
         get id() {
             return id;
         },
@@ -102,7 +116,6 @@ const MessageManager = function () {
     const options = [];
 
     let currentMessageID;
-    let nextMessageID;
     const sentMessageIDs = [];
     const pendingMessageIDs = [];
 
@@ -170,17 +183,24 @@ const MessageManager = function () {
     function onOptionClick(optionID) {
         const option = getOptionByID(optionID);
         if (option) {
+            sendMessage(option.content);
             removeElement(optionID, pendingOptionIDs);
             document.getElementById(optionID).remove();
-            nextMessageID = getOptionByID(optionID).replyMessageID;
+            pendingMessageIDs.unshift(option.replyMessageID);
             if (!sendingActive) {
-                sendMessage(nextMessageID);
+                receiveNextMessage();
             }
         }
     }
 
+    function sendMessage(content) {
+        const message = new Message(content, messageIDused++, true);
+
+        messageContainer.appendChild(message.HTML);
+    }
+
     // animate message to page
-    function sendMessage(messageID, onFinish) {
+    function receiveMessage(messageID, onFinish) {
         sendingActive = true;
         const message = getMessageByID(messageID);
         if (message) {
@@ -253,6 +273,17 @@ const MessageManager = function () {
                             duration: 200,
                             complete: () => {
                                 sendingActive = false;
+
+                                // append options if any
+                                if (message.optionIDs) {
+                                    for (let optionID of message.optionIDs) {
+                                        const option = getOptionByID(optionID);
+                                        removeElement(optionID, pendingOptionIDs);
+                                        displayingOptionIDs.push(optionID);
+                                        optionContainer.appendChild(option.HTML);
+                                    }
+                                }
+
                                 if (onFinish) {
                                     onFinish();
                                 }
@@ -262,31 +293,16 @@ const MessageManager = function () {
                 })
             }, waitTime);
 
-            // append options if any
-            if (message.optionIDs) {
-                for (let optionID of message.optionIDs) {
-                    const option = getOptionByID(optionID);
-                    removeElement(optionID, pendingOptionIDs);
-                    displayingOptionIDs.push(optionID);
-                    optionContainer.appendChild(option.HTML);
-                }
-            }
-
             sentMessageIDs.push(messageID);
             currentMessageID = undefined;
         }
     }
 
     // send next message to page
-    function sendNextMassage() {
-        if (nextMessageID && pendingMessageIDs.includes(nextMessageID)) {
-            // particular message is specified, send first
-            const tempNextMessageID = nextMessageID;
-            nextMessageID = undefined;
-            sendMessage(tempNextMessageID, sendNextMassage);
-        } else if (pendingMessageIDs.length > 0) {
-            // no specification, send by increasing id
-            sendMessage(pendingMessageIDs[0], sendNextMassage);
+    function receiveNextMessage() {
+        // send by increasing id
+        if (pendingMessageIDs.length > 0) {
+            receiveMessage(pendingMessageIDs[0], receiveNextMessage);
         }
     }
 
@@ -330,7 +346,7 @@ const MessageManager = function () {
     }
 
     function start() {
-        sendNextMassage();
+        receiveNextMessage();
     }
 
     return {
