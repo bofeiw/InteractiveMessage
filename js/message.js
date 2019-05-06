@@ -316,23 +316,15 @@ const MessageManager = function () {
         return getByID(id, options);
     }
 
-    function getFontSize() {
-        return parseInt(getComputedStyle(document.body).getPropertyValue('font-size'));
-    }
-
-    function pxToRem(px) {
-        return px / getFontSize() + 'rem';
-    }
-
     function getDimensions(message) {
         return {
             message: {
-                w: pxToRem(message.textHTML.offsetWidth + 4),
-                h: pxToRem(message.textHTML.offsetHeight)
+                w: anime.get(message.textHTML, "width", "rem") + 'rem',
+                h: anime.get(message.textHTML, "height", "rem") + 'rem',
             },
             loading: {
-                w: pxToRem(message.loadingHTML.offsetWidth + 4),
-                h: pxToRem(message.loadingHTML.offsetHeight)
+                w: anime.get(message.loadingHTML, "width", "rem") + 'rem',
+                h: anime.get(message.loadingHTML, "height", "rem") + 'rem',
             }
         }
     }
