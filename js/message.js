@@ -86,27 +86,6 @@ const Option = function (content, id, replyMessageID, onclick) {
         },
         get replyMessageID() {
             return replyMessageID;
-        },
-        get HTML() {
-            /*
-            structure:
-            div container
-                div text
-             */
-
-            // create elements
-            const container = document.createElement("button");
-            const text = document.createElement("div");
-
-            // assemble elements
-            container.appendChild(text);
-
-            // add tags
-            container.id = id;
-            text.innerHTML = content;
-            container.addEventListener("click", () => onclick(id));
-
-            return container;
         }
     }
 };
@@ -131,6 +110,8 @@ const MessageManager = function () {
     let sendingActive = false;
     const typingSpeed = 20;
 
+    let optionManager;
+
     function init() {
         container = document.getElementById("interactive-message");
         if (!container) {
@@ -147,6 +128,9 @@ const MessageManager = function () {
 
         container.appendChild(messageContainer);
         container.appendChild(optionContainer);
+
+        optionManager = new CircleManager(optionContainer.id);
+        optionManager.onclick = onOptionClickCallback;
     }
 
     // parse JSON into properties
@@ -185,12 +169,21 @@ const MessageManager = function () {
         if (option) {
             sendMessage(option.content);
             removeElement(optionID, pendingOptionIDs);
-            document.getElementById(optionID).remove();
             pendingMessageIDs.unshift(option.replyMessageID);
             if (!sendingActive) {
                 receiveNextMessage();
             }
         }
+    }
+
+    function onOptionClickCallback(content) {
+        for (const optionID of displayingOptionIDs) {
+            const option = getOptionByID(optionID);
+            if (option.content === content) {
+                onOptionClick(option.id);
+            }
+        }
+        console.log('not found')
     }
 
     function sendMessage(content) {
@@ -280,7 +273,7 @@ const MessageManager = function () {
                                         const option = getOptionByID(optionID);
                                         removeElement(optionID, pendingOptionIDs);
                                         displayingOptionIDs.push(optionID);
-                                        optionContainer.appendChild(option.HTML);
+                                        optionManager.add(option.content);
                                     }
                                 }
 
