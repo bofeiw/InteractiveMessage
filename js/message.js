@@ -181,9 +181,9 @@ const MessageManager = function () {
             const option = getOptionByID(optionID);
             if (option.content === content) {
                 onOptionClick(option.id);
+                return;
             }
         }
-        console.log('not found')
     }
 
     function sendMessage(content) {
