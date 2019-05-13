@@ -211,6 +211,14 @@ const MessageManager = function () {
             const diaplayBefore = message.textHTML.style.display;
             message.textHTML.style.display = "none";
 
+            // scroll into view
+            anime({
+                targets: messageContainer,
+                scrollTop: messageContainer.scrollHeight,
+                duration: 1000,
+                easing: 'linear'
+            });
+
             // show up
             anime({
                 targets: message.HTML,
