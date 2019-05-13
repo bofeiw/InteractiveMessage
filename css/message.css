@@ -7,16 +7,19 @@
     font-size: 1.5rem;
   }
 }
+
 @media (min-width: 900px) {
   :root {
     font-size: 1.75rem;
   }
 }
+
 @media (min-width: 1200px) {
   :root {
     font-size: 2rem;
   }
 }
+
 *, *:before, *:after {
   margin: 0;
   padding: 0;
@@ -28,25 +31,26 @@ html, body {
 
 #interactive-message {
   height: 100%;
-  width: 30%;
+  width: 40%;
   display: flex;
   flex-direction: column;
-  overflow-y: scroll;
-  overflow-x: hidden;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  overflow: hidden;
 }
 
 #message-container {
   border-left: 6px solid red;
   background-color: lightgrey;
   padding: 1rem;
-  flex: 3;
+  flex: 70;
+  overflow-y: scroll;
+  overflow-x: hidden;
 }
 
 #option-container {
   border-left: 6px solid green;
   background-color: lightgrey;
-  flex: 1;
+  flex: 30;
 }
 
 .content-container {
@@ -73,11 +77,14 @@ html, body {
 
 .content-container span b {
   display: inline-block;
-  color: rgba(0, 0, 0, 0.5);
+  color: rgba(0, 0, 0, .5);
 }
 
 .content-loading {
   position: absolute;
+}
+
+.content-text {
 }
 
 .content-mine {
@@ -87,5 +94,3 @@ html, body {
 .clear {
   clear: both;
 }
-
-/*# sourceMappingURL=message.css.map */
