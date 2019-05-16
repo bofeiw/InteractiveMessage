@@ -41,14 +41,16 @@ html, body {
 
 #message-container {
   padding: 1rem;
-  flex: 60;
+  flex: 50;
   overflow-y: scroll;
   overflow-x: hidden;
+  transition: flex 1s ease;
 }
 
 #option-container {
   background-color: lightgrey;
-  flex: 40;
+  flex: 50;
+  transition: flex 1s ease;
 }
 
 .content-container {

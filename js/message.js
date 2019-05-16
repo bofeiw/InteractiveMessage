@@ -168,7 +168,7 @@ const MessageManager = function () {
         const option = getOptionByID(optionID);
         if (option) {
             sendMessage(option.content);
-            removeElement(optionID, pendingOptionIDs);
+            removeElement(optionID, displayingOptionIDs);
             pendingMessageIDs.unshift(option.replyMessageID);
             if (!sendingActive) {
                 receiveNextMessage();
@@ -186,10 +186,41 @@ const MessageManager = function () {
         }
     }
 
+    function adjustFlex() {
+        function constrain(min, max, num) {
+            if (num > max) {
+                return max;
+            } else if (num < min) {
+                return min;
+            } else {
+                return num;
+            }
+        }
+
+        const nMessages = sentMessageIDs.length;
+        const nOptions = displayingOptionIDs.length;
+
+        const percentMessages = nMessages * 10;
+
+        const messageMin = 20;
+        const messageMax = (nOptions > 2) ? 50 : 70;
+
+        const adjustedPercentMessage = (nOptions > 0) ? constrain(messageMin, messageMax, percentMessages) : 100;
+        const adjustedPercentOption = 100 - adjustedPercentMessage;
+
+        messageContainer.style.flex = adjustedPercentMessage;
+        optionContainer.style.flex = adjustedPercentOption;
+
+        if (nOptions > 0) {
+            setTimeout(optionManager.adjust, 1000);
+        }
+    }
+
     function sendMessage(content) {
         const message = new Message(content, messageIDused++, true);
 
         messageContainer.appendChild(message.HTML);
+        adjustFlex();
     }
 
     // animate message to page
@@ -208,7 +239,7 @@ const MessageManager = function () {
             const dimensions = getDimensions(message);
             message.contentWrapper.style.width = dimensions.loading.w;
             message.contentWrapper.style.height = dimensions.loading.h;
-            const diaplayBefore = message.textHTML.style.display;
+            const displayBefore = message.textHTML.style.display;
             message.textHTML.style.display = "none";
 
             // scroll into view
@@ -265,7 +296,7 @@ const MessageManager = function () {
                     duration: 200,
                     complete: () => {
                         message.textHTML.style.opacity = 0;
-                        message.textHTML.style.display = diaplayBefore;
+                        message.textHTML.style.display = displayBefore;
                         // show text
                         anime({
                             targets: message.textHTML,
@@ -296,6 +327,7 @@ const MessageManager = function () {
 
             sentMessageIDs.push(messageID);
             currentMessageID = undefined;
+            adjustFlex();
         }
     }
 

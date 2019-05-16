@@ -179,16 +179,7 @@ function CircleManager(containerID) {
     let circleCount = 0;
     let enableDynamicCollision = true;
 
-    window.onresize = () => {
-        // adjust circle size
-        for (const circle of circles) {
-            adjustSize(circle.HTML);
-        }
-
-        // adjust gravity position
-        gravity.x = getContainerWidthInRem() / 2;
-        gravity.y = getContainerHeightInRem() / 2;
-    };
+    window.onresize = adjust;
 
     // callback when circle is clicked
     // this can be defined by user
@@ -205,6 +196,17 @@ function CircleManager(containerID) {
 
     function getContainerHeightInRem() {
         return pxToRem(parsePx(getComputedStyle(container).height));
+    }
+
+    function adjust() {
+        // adjust circle size
+        for (const circle of circles) {
+            adjustSize(circle.HTML);
+        }
+
+        // adjust gravity position
+        gravity.x = getContainerWidthInRem() / 2;
+        gravity.y = getContainerHeightInRem() / 2;
     }
 
     // return if a circle has collision
@@ -434,5 +436,6 @@ function CircleManager(containerID) {
         },
 
         add,
+        adjust
     }
 }
