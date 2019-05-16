@@ -259,27 +259,12 @@ const MessageManager = function () {
             // loading dots
             anime({
                 targets: message.HTML.querySelectorAll('b'),
-                opacity: [0.5, 1],
-                scale: [0.8, 1],
-                direction: 'alternate',
-                loop: true,
-                duration: 300,
-                delay: function (el, i) {
-                    return (i * 100) + 50
-                },
-                loopComplete: (anim) => {
-                    // remove loading dots
-                    if (!typing) {
-                        anim.pause();
-                        anime({
-                            targets: message.HTML.querySelectorAll('b'),
-                            opacity: 0,
-                            scale: 0,
-                            loop: false,
-                            duration: 300,
-                            easing: 'easeOutQuad',
-                            delay: anime.stagger(50),
-                        });
+                opacity: [0.5, 1, 0.5],
+                duration: 1000,
+                delay: anime.stagger(100),
+                complete: (anim)  => {
+                    if (typing) {
+                        anim.restart();
                     }
                 }
             });
@@ -287,6 +272,18 @@ const MessageManager = function () {
             // time's up, show content
             setTimeout(() => {
                 typing = false;
+
+                // hide dots
+                anime({
+                    targets: message.HTML.querySelectorAll('b'),
+                    opacity: 0,
+                    scale: 0,
+                    loop: false,
+                    duration: 200,
+                    easing: 'easeOutQuad',
+                    // delay: anime.stagger(50),
+                });
+
                 // adjust bubble size
                 anime({
                     targets: message.contentWrapper,
@@ -295,6 +292,7 @@ const MessageManager = function () {
                     easing: 'easeOutQuad',
                     duration: 200,
                     complete: () => {
+                        sendingActive = false;
                         message.textHTML.style.opacity = 0;
                         message.textHTML.style.display = displayBefore;
                         // show text
@@ -303,24 +301,22 @@ const MessageManager = function () {
                             opacity: 1,
                             easing: 'easeInQuad',
                             duration: 200,
-                            complete: () => {
-                                sendingActive = false;
-
-                                // append options if any
-                                if (message.optionIDs) {
-                                    for (let optionID of message.optionIDs) {
-                                        const option = getOptionByID(optionID);
-                                        removeElement(optionID, pendingOptionIDs);
-                                        displayingOptionIDs.push(optionID);
-                                        optionManager.add(option.content);
-                                    }
-                                }
-
-                                if (onFinish) {
-                                    onFinish();
-                                }
-                            }
                         });
+
+                        // append options if any
+                        if (message.optionIDs) {
+                            for (let optionID of message.optionIDs) {
+                                const option = getOptionByID(optionID);
+                                removeElement(optionID, pendingOptionIDs);
+                                displayingOptionIDs.push(optionID);
+                                optionManager.add(option.content);
+                            }
+                        }
+
+                        // call callback if any
+                        if (onFinish) {
+                            onFinish();
+                        }
                     }
                 })
             }, waitTime);
