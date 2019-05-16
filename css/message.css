@@ -60,6 +60,7 @@ html, body {
   border-radius: 1rem;
   display: inline-block;
   overflow: hidden;
+  position: relative;
 }
 
 .message-wrapper {
