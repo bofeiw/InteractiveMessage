@@ -260,8 +260,9 @@ const MessageManager = function () {
             anime({
                 targets: message.HTML.querySelectorAll('b'),
                 opacity: [0.5, 1, 0.5],
-                duration: 1000,
-                delay: anime.stagger(100),
+                duration: 600,
+                delay: anime.stagger(200),
+                easing: 'linear',
                 complete: (anim)  => {
                     if (typing) {
                         anim.restart();
@@ -281,7 +282,6 @@ const MessageManager = function () {
                     loop: false,
                     duration: 200,
                     easing: 'easeOutQuad',
-                    // delay: anime.stagger(50),
                 });
 
                 // adjust bubble size
