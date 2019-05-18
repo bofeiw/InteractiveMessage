@@ -169,6 +169,7 @@ const MessageManager = function () {
         if (option) {
             sendMessage(option.content);
             removeElement(optionID, displayingOptionIDs);
+            adjustFlex();
             pendingMessageIDs.unshift(option.replyMessageID);
             if (!sendingActive) {
                 receiveNextMessage();
@@ -200,7 +201,23 @@ const MessageManager = function () {
         const nMessages = sentMessageIDs.length;
         const nOptions = displayingOptionIDs.length;
 
-        const percentMessages = nMessages * 10;
+        let percentPerMessage;
+        if (nOptions === 0) {
+            percentPerMessage = 100;
+        } else if (nOptions === 1) {
+            percentPerMessage = 40;
+        } else if (nOptions === 2) {
+            percentPerMessage = 30;
+        } else if (nOptions === 3) {
+            percentPerMessage = 25;
+        } else if (nOptions <= 5) {
+            percentPerMessage = 20;
+        } else {
+            percentPerMessage = 10;
+        }
+
+
+        const percentMessages = nMessages * percentPerMessage;
 
         const messageMin = 20;
         const messageMax = (nOptions > 2) ? 50 : 70;
@@ -212,7 +229,7 @@ const MessageManager = function () {
         optionContainer.style.flex = adjustedPercentOption;
 
         if (nOptions > 0) {
-            setTimeout(optionManager.adjust, 1000);
+            setTimeout(optionManager.adjust, 100);
         }
     }
 
@@ -310,6 +327,7 @@ const MessageManager = function () {
                                 removeElement(optionID, pendingOptionIDs);
                                 displayingOptionIDs.push(optionID);
                                 optionManager.add(option.content);
+                                adjustFlex();
                             }
                         }
 
@@ -407,7 +425,7 @@ function start() {
     const manager = new MessageManager();
     manager.init();
 
-    loadJSON("samples/basicReply.json",
+    loadJSON("samples/test.json",
         data => {
             console.log(data);
             manager.parseJSON(data);
