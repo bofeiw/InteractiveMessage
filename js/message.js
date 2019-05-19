@@ -285,7 +285,7 @@ const MessageManager = function () {
                 duration: 600,
                 delay: anime.stagger(200),
                 easing: 'linear',
-                complete: (anim)  => {
+                complete: (anim) => {
                     if (typing) {
                         anim.restart();
                     }
@@ -402,15 +402,15 @@ const MessageManager = function () {
     }
 
     return {
-        init: init,
-        parseJSON: parseJSON,
-        start: start
+        init,
+        parseJSON,
+        start
     }
 };
 
 // ref https://stackoverflow.com/a/18278346/9494810
 function loadJSON(path, success, error) {
-    var xhr = new XMLHttpRequest();
+    const xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function () {
         if (xhr.readyState === XMLHttpRequest.DONE) {
             if (xhr.status === 200) {
@@ -426,20 +426,20 @@ function loadJSON(path, success, error) {
     xhr.send();
 }
 
-function start() {
-    const manager = new MessageManager();
-    manager.init();
-
-    loadJSON("samples/basicReply.json",
+/*
+* start interactive message
+*
+* filePath: json file path
+* if no such file, error will be logged and nothing will start
+* */
+function interactiveMessageStart(filePath) {
+    loadJSON(filePath,
         data => {
-            console.log(data);
+            const manager = new MessageManager();
+            manager.init();
             manager.parseJSON(data);
             manager.start();
         },
-        () => alert("error loading JSON")
+        () => console.log("Interactive Message", "error loading JSON")
     )
 }
-
-window.onload = function () {
-    start();
-};
