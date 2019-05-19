@@ -1,0 +1,8 @@
+{
+  "content": "Hello there!",
+  "beforeWaitTime": "0|num|rand|auto",
+  "afterWaitTime": "0|num|rand|auto",
+  "priority": "order|num|beforeAll|afterAll",
+  "after": "a list of after objects",
+  "showSpeed": "len|num"
+}

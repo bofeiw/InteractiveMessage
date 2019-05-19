@@ -1,0 +1,2 @@
+These json files are the Objects when I first design the data structure of Interactive Message.
+But I quickly found that these Objects are overstaffed for Interactive Message which is lightweight, then they are discarded. 
