@@ -188,49 +188,54 @@ const MessageManager = function () {
     }
 
     function adjustFlex() {
-        function constrain(min, max, num) {
-            if (num > max) {
-                return max;
-            } else if (num < min) {
-                return min;
+        function realAdjustFlex() {
+            function constrain(min, max, num) {
+                if (num > max) {
+                    return max;
+                } else if (num < min) {
+                    return min;
+                } else {
+                    return num;
+                }
+            }
+
+            const nMessages = sentMessageIDs.length;
+            const nOptions = displayingOptionIDs.length;
+
+            let percentPerMessage;
+            if (nOptions === 0) {
+                percentPerMessage = 100;
+            } else if (nOptions === 1) {
+                percentPerMessage = 40;
+            } else if (nOptions === 2) {
+                percentPerMessage = 30;
+            } else if (nOptions === 3) {
+                percentPerMessage = 25;
+            } else if (nOptions <= 5) {
+                percentPerMessage = 20;
             } else {
-                return num;
+                percentPerMessage = 10;
+            }
+
+
+            const percentMessages = nMessages * percentPerMessage;
+
+            const messageMin = 20;
+            const messageMax = (nOptions > 2) ? 50 : 70;
+
+            const adjustedPercentMessage = (nOptions > 0) ? constrain(messageMin, messageMax, percentMessages) : 100;
+            const adjustedPercentOption = 100 - adjustedPercentMessage;
+
+            messageContainer.style.flex = adjustedPercentMessage;
+            optionContainer.style.flex = adjustedPercentOption;
+
+            if (nOptions > 0) {
+                setTimeout(optionManager.adjust, 100);
             }
         }
 
-        const nMessages = sentMessageIDs.length;
-        const nOptions = displayingOptionIDs.length;
-
-        let percentPerMessage;
-        if (nOptions === 0) {
-            percentPerMessage = 100;
-        } else if (nOptions === 1) {
-            percentPerMessage = 40;
-        } else if (nOptions === 2) {
-            percentPerMessage = 30;
-        } else if (nOptions === 3) {
-            percentPerMessage = 25;
-        } else if (nOptions <= 5) {
-            percentPerMessage = 20;
-        } else {
-            percentPerMessage = 10;
-        }
-
-
-        const percentMessages = nMessages * percentPerMessage;
-
-        const messageMin = 20;
-        const messageMax = (nOptions > 2) ? 50 : 70;
-
-        const adjustedPercentMessage = (nOptions > 0) ? constrain(messageMin, messageMax, percentMessages) : 100;
-        const adjustedPercentOption = 100 - adjustedPercentMessage;
-
-        messageContainer.style.flex = adjustedPercentMessage;
-        optionContainer.style.flex = adjustedPercentOption;
-
-        if (nOptions > 0) {
-            setTimeout(optionManager.adjust, 100);
-        }
+        realAdjustFlex();
+        setTimeout(realAdjustFlex, 1000);
     }
 
     function sendMessage(content) {
@@ -425,7 +430,7 @@ function start() {
     const manager = new MessageManager();
     manager.init();
 
-    loadJSON("samples/test.json",
+    loadJSON("samples/basicReply.json",
         data => {
             console.log(data);
             manager.parseJSON(data);
