@@ -164,6 +164,7 @@ At the moment, no callbacks are supported as this repo is just started. But feel
 - write gh pages (plan: representation of editable json data)
 - add styles
 - write a serious demo json file
+- update docs (UML)
 
 # Contribution
 You are welcome to contribute! You can consider to kill some TODOs.  
