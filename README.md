@@ -166,6 +166,7 @@ At the moment, no callbacks are supported as this repo is just started. But feel
 - add styles
 - write a serious demo json file
 - update docs (UML)
+- add comments for codes
 
 # Contribution
 You are welcome to contribute! You can consider to kill some TODOs.  
