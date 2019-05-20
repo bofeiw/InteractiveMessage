@@ -1,0 +1,16 @@
+{
+  "messages": [
+    {
+      "content": "Hello world!"
+    },
+    {
+      "content": "Another hello world!",
+      "option": {
+        "content": "This hello world is clickable!",
+        "reply": {
+          "content": "I can reply for your click!"
+        }
+      }
+    }
+  ]
+}
