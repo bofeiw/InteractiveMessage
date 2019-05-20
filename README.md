@@ -55,7 +55,7 @@ And save it as `helloWrold.json`.
     interactiveMessageStart("helloWorld.json");
 </script>
 ```
-You can also see the [complete example](samples/helloWorld.html) or other two examples: [basic messages only](samples/basic.html) and [messages with reply](samples/reply.html).  
+You can also see the [complete example](samples/json/helloWorld.json) or other two examples: [basic messages only](samples/json/basicMessage.json) and [messages with reply](samples/json/basicReply.json).  
 
 # JSON file structure
 - First, `messages` is the enter point of Interactive Message. It corresponds to a list of Objects.   
