@@ -8,7 +8,7 @@ Try here: https://bofei.io/InteractiveMessage/samples/reply
 ![demo.gif](docs/demo.gif)
 
 # How to use
-1. Include `css` and `js` in your HTML.
+1. Add `css` and `js` in your HTML.
 ```html
 <link rel="stylesheet" href="adjustSize.css">
 <link rel="stylesheet" href="message.css">
@@ -26,7 +26,7 @@ Try here: https://bofei.io/InteractiveMessage/samples/reply
 ```html
 <div id="interactive-message"></div>
 ```
-You can also wrap your container inside another `div` for styles.
+Tip: You can also wrap your container inside another `div` for styles.
 
 3. Define your messages in a json file, for example, a hello world:
 ```json
@@ -54,8 +54,7 @@ And save it as `helloWrold.json`.
     interactiveMessageStart("helloWorld.json");
 </script>
 ```
-You can also see the complete example [here](samples/helloWorld.html).  
-Another Two examples: [basic messages only](samples/basic.html) and [messages with reply](samples/reply.html).  
+You can also see the [complete example](samples/helloWorld.html) or other two examples: [basic messages only](samples/basic.html) and [messages with reply](samples/reply.html).  
 
 # JSON file structure
 - First, `messages` is the enter point of Interactive Message. It corresponds to a list of Objects.   
@@ -63,6 +62,7 @@ Another Two examples: [basic messages only](samples/basic.html) and [messages wi
 - Each message object has a mandatory `content` which corresponds to a string and will be displayed on screen, and an optional `option` which corresponds to another Object.  
 - An `option` object has two mandatory fields, `content` which corresponds to a string and will be displayed on screen, and `reply` which is a message object.  
 - Recursive message with reply is supported.
+- HTML tags are not filtered. This enables you to add anything you need, for example `links`, `images` or even `iframes`! But be careful about security issues.
 
 The basic structure will look like this:
 ```json
@@ -98,7 +98,7 @@ The basic structure will look like this:
   ]
 }
 ``` 
-And here is the json file used in the [demo page](https://bofei.io/InteractiveMessage/samples/reply).
+And the following is the json file used in the [demo page](https://bofei.io/InteractiveMessage/samples/reply).
 ```json
 {
   "messages": [
