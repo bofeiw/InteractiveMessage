@@ -48,6 +48,7 @@ Tip: You can also wrap your container inside another `div` for styles.
 }
 ```
 And save it as `helloWrold.json`.
+
 4. Add a line of `js` to pass the json path to start!
 ```html
 <script>
