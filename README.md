@@ -1,12 +1,11 @@
 # Interactive Message
 Static interactive message with predefined data.  
-It uses [Floating Circle](http://bofei.io/floatingCircle/) for circle simulation.  
-And uses [Anime.js](https://animejs.com) for animation.
+It uses [Floating Circle](http://bofei.io/floatingCircle/) for circle simulation, [Anime.js](https://animejs.com) for animation.
 
 # Demo 
-Try here: 
+Try here: https://bofei.io/InteractiveMessage/samples/reply
 
-![demo.gif]()
+![demo.gif](docs/demo.gif)
 
 # How to use
 1. Include `css` and `js` in your HTML.
@@ -58,6 +57,98 @@ And save it as `helloWrold.json`.
 You can also see the complete example [here](samples/helloWorld.html).  
 Another Two examples: [basic messages only](samples/basic.html) and [messages with reply](samples/reply.html).  
 
+# JSON file structure
+- First, `messages` is the enter point of Interactive Message. It corresponds to a list of Objects.   
+- Each message object is one message that will be displayed one after another.  
+- Each message object has a mandatory `content` which corresponds to a string and will be displayed on screen, and an optional `option` which corresponds to another Object.  
+- An `option` object has two mandatory fields, `content` which corresponds to a string and will be displayed on screen, and `reply` which is a message object.  
+- Recursive message with reply is supported.
+
+The basic structure will look like this:
+```json
+{
+  "messages": [
+    {
+      "content": "Your first message",
+      "option": {
+        "content": "Option is completely optional",
+        "reply": {
+          "content": "But if you have an option, you must define its reply"
+        }
+      }
+    },
+    {
+      "content": "Here is your second message, and without option"
+    },
+    {
+      "content": "This is your third message, and you can add more",
+      "option": {
+        "content": "This will be the clickable option",
+        "reply": {
+          "content": "Recursive message is supported",
+          "option": {
+            "content": "This will be the reply for recursive content",
+            "reply": {
+              "content": "Recursive message ends where a reply has no more recursive message object."
+            }
+          }
+        }
+      }
+    }
+  ]
+}
+``` 
+And here is the json file used in the [demo page](https://bofei.io/InteractiveMessage/samples/reply).
+```json
+{
+  "messages": [
+    {
+      "content": "Hello there!",
+      "option": {
+        "content": "Hello! What's your name?",
+        "reply": {
+          "content": "I am Interactive Message!"
+        }
+      }
+    },
+    {
+      "content": "Here are some usage of messages"
+    },
+    {
+      "content": "Welcome to this demo!",
+      "option": {
+        "content": "What is this demo about?",
+        "reply": {
+          "content": "This demo shows some of the features of Interactive Message.",
+          "option": {
+            "content": "What are the features?",
+            "reply": {
+              "content": "It will come soon!"
+            }
+          }
+        }
+      }
+    },
+    {
+      "content": "Hope you'll love it.",
+      "option": {
+        "content": "Can I use it?",
+        "reply": {
+          "content": "Sure! It is open sourced, try it out <a href='https://github.com/bofeiw/InteractiveMessage'>here</a>",
+          "option": {
+            "content": "Thanks!",
+            "reply": {
+              "content": "No worries. Please help your self."
+            }
+          }
+        }
+      }
+    }
+  ]
+}
+```
+
+
 # Callbacks
 At the moment, no callbacks are supported as this repo is just started. But feel free to request in issues if you want a particular feature, or pull requests if you are capable.  
 
@@ -72,6 +163,7 @@ At the moment, no callbacks are supported as this repo is just started. But feel
 - add some callbacks
 - write gh pages (plan: representation of editable json data)
 - add styles
+- write a serious demo json file
 
 # Contribution
 You are welcome to contribute! You can consider to kill some TODOs.  
