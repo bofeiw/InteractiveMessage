@@ -149,6 +149,10 @@ And the following is the json file used in the [demo page](https://bofei.io/Inte
 }
 ```
 
+# Featured Projects
+Project | Repo | JSON
+:-: | :-: | :-: 
+[Personal Website](https://bofei.io) | View on [GitHub](https://github.com/bofeiw/bofeiw.github.io) | View [JSON for repo](https://github.com/bofeiw/bofeiw.github.io/blob/master/data/messages.json)
 
 # Callbacks
 At the moment, no callbacks are supported as this repo is just started. But feel free to request in issues if you want a particular feature, or pull requests if you are capable.  
