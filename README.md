@@ -167,6 +167,10 @@ At the moment, no callbacks are supported as this repo is just started. But feel
 - write a serious demo json file
 - update docs (UML)
 - add comments for codes
+- resolve sometimes two circles are not shown fully
+- distinguish between received messages and sent messages from long messages (like imessage)
+- send (thanks/contact info again) after all is sent
+- reduce computation (a bit slow on iPhone 7 Safari)
 
 # Contribution
 You are welcome to contribute! You can consider to kill some TODOs.  
