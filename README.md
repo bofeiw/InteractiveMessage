@@ -3,7 +3,7 @@ Static interactive message with predefined data.
 It uses [Floating Circle](http://bofei.io/floatingCircle/) for circle simulation, [Anime.js](https://animejs.com) for animation.
 
 # Demo 
-Try here: https://bofei.io/InteractiveMessage/samples/reply
+Try here: https://bofeiw.github.io/InteractiveMessage/samples/reply
 
 ![demo.gif](docs/demo.gif)
 
